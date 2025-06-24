@@ -1,1 +1,488 @@
 "# souls-digital-compass" 
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Soul's Digital Compass - Interactive Report</title>
+    <!-- Chosen Palette: Calm Harmony (Warm Neutrals with Teal/Slate Blue Accent) -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page, multi-section dashboard to provide a comprehensive yet digestible overview of the project. This non-linear structure, supported by a sticky navigation bar, allows users (stakeholders, developers) to explore the project thematically rather than being forced into a linear reading. The sections are: Vision (high-level intro), The AI Core (deep-dive on the unique AI architecture), Technology Stack (interactive overview), Capabilities & Roadmap (explorable features and timeline), and Ethical Framework (building trust). This structure was chosen because it breaks down a complex technical document into logical, engaging chunks, prioritizing user exploration and understanding of the project's key differentiators over a simple document replication. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Project Vision -> Goal: Inform/Inspire -> Viz/Method: Large typography, hero section -> Interaction: Static -> Justification: Creates a strong, immediate impression of the project's ambitious goal.
+        - Report Info: AI Core Concepts (Constitution, User Model) -> Goal: Organize/Explain -> Viz/Method: HTML/CSS diagram and tabbed content -> Interaction: Clickable tabs -> Justification: Simplifies complex architectural ideas into interactive, digestible parts without overwhelming the user.
+        - Report Info: Technology Stack (Table 1) -> Goal: Compare/Inform -> Viz/Method: Interactive cards with a central focus on Gemini -> Interaction: Hover effects (implicit) -> Justification: More visually engaging than a static table; emphasizes the strategic importance of the core LLM.
+        - Report Info: Development Roadmap (Table 3) -> Goal: Show Change -> Viz/Method: Chart.js Horizontal Bar Chart -> Interaction: Visual timeline -> Justification: Translates a dry table into a clear, time-based visual that's easy to understand at a glance.
+        - Report Info: AI Capabilities (Table 2) & Modules -> Goal: Organize/Inform -> Viz/Method: Grid of clickable cards -> Interaction: Click to reveal details in a modal -> Justification: Allows users to explore the breadth of features without cluttering the main UI. It encourages discovery.
+        - Library/Method: Chart.js for the roadmap chart. All other visuals are built with HTML and Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3d3d3d;
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #0d9488;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-teal-700">The Soul's Digital Compass</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#vision" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Vision</a>
+                        <a href="#ai-core" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">AI Core</a>
+                        <a href="#stack" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Technology</a>
+                        <a href="#capabilities" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Capabilities</a>
+                        <a href="#roadmap" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Roadmap</a>
+                        <a href="#ethics" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Ethics</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-teal-700 hover:bg-gray-100 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#vision" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Vision</a>
+                <a href="#ai-core" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">AI Core</a>
+                <a href="#stack" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Technology</a>
+                <a href="#capabilities" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Capabilities</a>
+                <a href="#roadmap" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Roadmap</a>
+                <a href="#ethics" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Ethics</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Vision Section -->
+        <section id="vision" class="py-20 sm:py-28 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-gray-800">Transforming Pain into Purpose.</h1>
+                <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+                    "The Soul's Digital Compass" is a visionary AI-powered self-awareness platform. It's designed to guide individuals on their personal journeys through "metaphysical alchemy at scale," fostering genuine self-transformation with a reflective AI companion named Kairos.
+                </p>
+            </div>
+        </section>
+
+        <!-- AI Core Section -->
+        <section id="ai-core" class="py-20 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">The Heart of Kairos: The AI Core</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        The platform's uniqueness lies in its sophisticated AI architecture. Unlike typical chatbots, Kairos is built on a deep foundation of personality, memory, and ethics, enabling a truly continuous and personalized "soul journey."
+                    </p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+                    <!-- Master AI Constitution -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-semibold text-gray-800">The Master AI Constitution</h3>
+                        <p class="mt-2 text-gray-600">This is the AI's "guiding philosophy," a layered system prompt that defines its core behavior. It ensures Kairos is consistent, wise, and ethically bound.</p>
+                        <div class="mt-6">
+                            <div class="border-b border-gray-200">
+                                <nav id="ai-constitution-tabs" class="-mb-px flex space-x-6" aria-label="Tabs">
+                                    <button data-tab="persona" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-teal-600 border-teal-500">Persona</button>
+                                    <button data-tab="epistemological" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">Epistemological</button>
+                                    <button data-tab="ethical" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">Ethical</button>
+                                </nav>
+                            </div>
+                            <div id="ai-constitution-content" class="mt-4 text-gray-600 min-h-[120px]">
+                                <!-- Content will be injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Structured User Model -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-semibold text-gray-800">The Structured User Model</h3>
+                        <p class="mt-2 text-gray-600">This is the secret to Kairos's long-term memory and deep personalization. It's more than a chat history; it's a dynamic knowledge graph of the user's inner world.</p>
+                        <div class="mt-6 flow-root">
+                           <div class="flex flex-col items-center justify-center space-y-4 text-center">
+                                <div class="p-4 bg-teal-50 rounded-lg w-full">
+                                    <p class="font-semibold text-teal-800">1. User Interaction</p>
+                                    <p class="text-sm text-teal-700">User shares thoughts, feelings, and experiences.</p>
+                                </div>
+                                <div class="text-teal-600 text-2xl font-light">&darr;</div>
+                                <div class="p-4 bg-amber-50 rounded-lg w-full">
+                                    <p class="font-semibold text-amber-800">2. Data Synthesis</p>
+                                    <p class="text-sm text-amber-700">AI identifies key insights, patterns, and named 'parts'.</p>
+                                </div>
+                                 <div class="text-amber-600 text-2xl font-light">&darr;</div>
+                                <div class="p-4 bg-sky-50 rounded-lg w-full">
+                                     <p class="font-semibold text-sky-800">3. Stored in Structured Model</p>
+                                     <p class="text-sm text-sky-700">This data is securely stored in an encrypted database (Firestore/PostgreSQL).</p>
+                                </div>
+                                 <div class="text-sky-600 text-2xl font-light">&darr;</div>
+                                <div class="p-4 bg-rose-50 rounded-lg w-full">
+                                    <p class="font-semibold text-rose-800">4. Context for Next Session</p>
+                                    <p class="text-sm text-rose-700">Model summary informs the Gemini Pro prompt, ensuring a continuous journey.</p>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Stack Section -->
+        <section id="stack" class="py-20 sm:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">A Modern, Unified Technology Stack</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        The platform is built on a foundation of powerful, scalable technologies, with Google's Gemini Pro API at the very center, simplifying the architecture and enhancing capabilities.
+                    </p>
+                </div>
+                <div id="tech-stack-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <!-- Tech stack cards will be inserted by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="py-20 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">AI Capabilities & Interactive Modules</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        Kairos interacts through a suite of powerful, multmodal capabilities and guided modules designed to translate abstract concepts into tangible, healing exercises.
+                    </p>
+                </div>
+                <div id="capabilities-grid" class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Capabilities cards will be inserted by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="roadmap" class="py-20 sm:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">The Development Roadmap</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        A strategic three-phase plan ensures a steady progression from a foundational MVP to a feature-rich, sustainable ecosystem.
+                    </p>
+                </div>
+                <div class="mt-16">
+                    <div class="chart-container">
+                        <canvas id="roadmap-chart"></canvas>
+                    </div>
+                    <div id="roadmap-details" class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                         <!-- Details for each phase will be here -->
+                         <div class="border border-gray-200 p-6 rounded-lg">
+                            <h3 class="font-semibold text-lg text-teal-700">Phase 1: Foundation & MVP</h3>
+                            <p class="text-sm text-gray-500">(Months 1-6)</p>
+                            <p class="mt-2 text-gray-600">Establish core AI intelligence, build basic chat UI, and implement foundational security.</p>
+                         </div>
+                         <div class="border border-gray-200 p-6 rounded-lg">
+                            <h3 class="font-semibold text-lg text-amber-700">Phase 2: Expansion & Multimodal</h3>
+                            <p class="text-sm text-gray-500">(Months 7-18)</p>
+                            <p class="mt-2 text-gray-600">Develop interactive modules, integrate voice/image AI, and refine ethical protocols.</p>
+                         </div>
+                         <div class="border border-gray-200 p-6 rounded-lg">
+                            <h3 class="font-semibold text-lg text-sky-700">Phase 3: Advanced Features & Growth</h3>
+                            <p class="text-sm text-gray-500">(Months 19+)</p>
+                            <p class="mt-2 text-gray-600">Implement cutting-edge privacy, advanced bias mitigation, and explore VR/AR experiences.</p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ethics Section -->
+        <section id="ethics" class="py-20 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">An Unwavering Ethical Framework</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        Trust is paramount. The platform is built with a "Privacy by Design" philosophy, integrating stringent security and ethical safeguards from the ground up.
+                    </p>
+                </div>
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-gray-800">Crisis Detection & Escalation</h3>
+                        <p class="mt-2 text-gray-600">AI identifies signs of distress and can route users to human support or emergency services, ensuring safety is always the priority.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-gray-800">Bias Mitigation</h3>
+                        <p class="mt-2 text-gray-600">Continuous ethical audits, fairness metrics, and human-in-the-loop validation work to ensure the AI is equitable and culturally responsive.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-gray-800">Advanced Data Privacy</h3>
+                        <p class="mt-2 text-gray-600">Future phases will explore Federated Learning and On-Device Processing, so raw user data never has to leave their device.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">The Soul's Digital Compass: Interactive Project Report</p>
+            <p class="mt-2 text-xs text-gray-500">This page is an interactive visualization of the project's technical documentation.</p>
+        </div>
+    </footer>
+    
+    <!-- Modal for Capabilities -->
+    <div id="capability-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Modal content injected by JS -->
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data
+            const aiConstitutionData = {
+                persona: {
+                    title: "The Persona Layer (The 'Who')",
+                    content: "This layer defines the AI's character, 'Kairos.' It embodies Jungian archetypes like the 'Wise Guide' or 'Magician,' giving its personality universal resonance and a consistent, underlying motivation."
+                },
+                epistemological: {
+                    title: "The Epistemological Layer (The 'How it Knows')",
+                    content: "This layer defines the AI's theory of knowledge. It operates on the belief that profound knowledge emerges from inner reflection. It practices Phenomenology, focusing entirely on the user's subjective experience, acting as a 'midwife' for the user's own self-knowledge."
+                },
+                ethical: {
+                    title: "The Ethical Layer (The 'Guardrails')",
+                    content: "A non-negotiable component that implements 'Constitutional AI.' The AI is given explicit, foundational principles (e.g., 'Do not act as a therapist,' 'Prioritize user agency') and checks its own responses against this constitution before any output."
+                }
+            };
+            
+            const techStackData = [
+                { name: 'React Native', category: 'Frontend (Mobile)' },
+                { name: 'React.js', category: 'Frontend (Web)' },
+                { name: 'Firebase', category: 'Backend (MVP)' },
+                { name: 'Node.js / Python', category: 'Backend (Scale)' },
+                { name: 'Google Gemini Pro', category: 'Core AI & Multimodal Engine', isCentral: true },
+                { name: 'Firestore / PostgreSQL', category: 'Database' },
+                { name: 'Figma', category: 'UI/UX Design' },
+                { name: 'Miro / MyMap.AI', category: 'Conceptual Mapping' }
+            ];
+
+            const capabilitiesData = [
+                { 
+                    name: 'Empathetic, Socratic Dialogue', 
+                    description: 'Kairos asks probing, reflective questions, never giving direct advice. It uses the Master AI Constitution and Structured User Model to maintain deep context across all sessions, guiding the user to their own conclusions.' 
+                },
+                { 
+                    name: 'Emotional State Detection', 
+                    description: 'Using Gemini Pro\'s native audio processing, Kairos can interpret nuances in the user\'s pitch, speed, and tone from voice input. This allows it to understand unspoken emotional states and respond with greater empathy.' 
+                },
+                { 
+                    name: 'Symbolic Visualizations', 
+                    description: 'The platform will leverage Gemini Pro (or integrated models like Imagen) to generate symbolic images representing a user\'s feelings, internal parts, or archetypes. This provides a powerful, non-verbal medium for deeper expression and exploration.' 
+                },
+                { 
+                    name: 'Pattern Recognition', 
+                    description: 'The "Pattern Recognizer" module uses Gemini Pro to analyze journaling entries and conversation history. It highlights recurring themes in thoughts, feelings, and behaviors, providing deeper insights into subconscious habits.' 
+                },
+                { 
+                    name: 'Internal Parts Dialogue (IFS)', 
+                    description: 'This guided module facilitates compassionate conversations between the user and their own internal "parts" (e.g., Exiles, Managers). Kairos guides the dialogue, and the Structured User Model tracks the identified parts for future sessions.' 
+                },
+                {
+                    name: 'Narrative Re-Authoring',
+                    description: 'Based on Narrative Therapy, this module helps users rewrite their personal story from one of victimhood to one of empowerment. Kairos helps identify the "problem story" and then uncovers "sparkling moments" of strength to build a new narrative.'
+                }
+            ];
+
+            // AI Constitution Tabs
+            const constitutionTabs = document.getElementById('ai-constitution-tabs');
+            const constitutionContent = document.getElementById('ai-constitution-content');
+            
+            function updateConstitutionTab(tabName) {
+                const data = aiConstitutionData[tabName];
+                constitutionContent.innerHTML = `<h4 class="font-semibold text-gray-800">${data.title}</h4><p class="mt-2">${data.content}</p>`;
+                
+                document.querySelectorAll('#ai-constitution-tabs .tab-button').forEach(button => {
+                    if (button.dataset.tab === tabName) {
+                        button.classList.add('text-teal-600', 'border-teal-500');
+                        button.classList.remove('text-gray-500', 'border-transparent');
+                    } else {
+                        button.classList.remove('text-teal-600', 'border-teal-500');
+                        button.classList.add('text-gray-500', 'border-transparent');
+                    }
+                });
+            }
+            
+            constitutionTabs.addEventListener('click', (e) => {
+                if (e.target.matches('.tab-button')) {
+                    updateConstitutionTab(e.target.dataset.tab);
+                }
+            });
+            updateConstitutionTab('persona');
+
+            // Tech Stack Grid
+            const techStackGrid = document.getElementById('tech-stack-grid');
+            techStackData.forEach(tech => {
+                const isCentral = tech.isCentral || false;
+                const card = document.createElement('div');
+                card.className = `card bg-white p-6 rounded-lg text-center shadow-md ${isCentral ? 'col-span-2 lg:col-span-4 bg-teal-50 border-2 border-teal-500' : 'col-span-1'}`;
+                card.innerHTML = `
+                    <h3 class="font-semibold ${isCentral ? 'text-2xl text-teal-800' : 'text-gray-800'}">${tech.name}</h3>
+                    <p class="text-sm ${isCentral ? 'text-teal-600' : 'text-gray-500'}">${tech.category}</p>
+                `;
+                techStackGrid.appendChild(card);
+            });
+
+            // Capabilities Grid & Modal
+            const capabilitiesGrid = document.getElementById('capabilities-grid');
+            const modal = document.getElementById('capability-modal');
+            const modalContent = document.getElementById('modal-content');
+
+            capabilitiesData.forEach(cap => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white p-6 rounded-lg shadow-md cursor-pointer';
+                card.innerHTML = `<h3 class="font-semibold text-gray-800">${cap.name}</h3>`;
+                card.addEventListener('click', () => {
+                    modalContent.innerHTML = `
+                        <div class="p-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-2xl font-bold text-gray-800">${cap.name}</h2>
+                                <button id="close-modal-button" class="text-gray-500 hover:text-gray-800">&times;</button>
+                            </div>
+                            <p class="text-gray-600">${cap.description}</p>
+                        </div>
+                    `;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.getElementById('close-modal-button').focus();
+                });
+                capabilitiesGrid.appendChild(card);
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.closest('#close-modal-button')) {
+                     modal.classList.add('hidden');
+                     modal.classList.remove('flex');
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+                     modal.classList.add('hidden');
+                     modal.classList.remove('flex');
+                }
+            });
+
+            // Roadmap Chart
+            const ctx = document.getElementById('roadmap-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Phase 1: Foundation', 'Phase 2: Expansion', 'Phase 3: Growth'],
+                    datasets: [{
+                        label: 'Months',
+                        data: [
+                            [0, 6],   // Phase 1: Months 1-6
+                            [6, 18],  // Phase 2: Months 7-18
+                            [18, 30]  // Phase 3: Months 19+ (showing a 12-month span for visualization)
+                        ],
+                        backgroundColor: [
+                            'rgba(13, 148, 136, 0.6)', // teal-600
+                            'rgba(217, 119, 6, 0.6)',  // amber-600
+                            'rgba(14, 116, 144, 0.6)'  // sky-700
+                        ],
+                        borderColor: [
+                            'rgba(13, 148, 136, 1)',
+                            'rgba(217, 119, 6, 1)',
+                            'rgba(14, 116, 144, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    return `Months: ${value[0]} - ${value[1]}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Project Timeline (Months)'
+                            }
+                        },
+                        y: {
+                           grid: {
+                                display: false
+                           }
+                        }
+                    }
+                }
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            // Close mobile menu on link click
+            mobileMenu.addEventListener('click', (e) => {
+                 if(e.target.matches('a')){
+                    mobileMenu.classList.add('hidden');
+                 }
+            });
+        });
+    </script>
+</body>
+</html>
